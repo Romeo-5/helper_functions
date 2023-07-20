@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import tensorflow as tf
 
-# Plot the validation and training curves separately 
 def plot_loss_curves(history):
   """
   Returns separate loss curves for training and validation metrics
@@ -29,7 +28,6 @@ def plot_loss_curves(history):
   plt.xlabel("epochs")
   plt.legend()
 
-# Create a function to import an image and resize it to be able to be used with our model 
 def load_and_prep_image(filename, img_shape=224):
   """
   Reads an image from filename, turns it into a tensor and reshapes it to 
@@ -44,4 +42,23 @@ def load_and_prep_image(filename, img_shape=224):
   # Rescale the image (get all values between 0 and 1)
   img = img/255.
   return img
+
+def pred_and_plot(model, filename, class_names=class_names):
+  """
+  Imports an image located at filename, makes a prediction with model
+  and plots the image with the predicted class as the title.
+  """
+  # Import the target image and preprocess it 
+  img = load_and_prep_image(filename)
+
+  # Make a prediction
+  pred = model.predict(tf.expand_dims(img, axis=0))
+
+  # Get the predicted class
+  pred_class = class_names[int(tf.round(pred))]
+
+  # Plot the image and predicted class 
+  plt.imshow(img)
+  plt.title(f"Prediction: {pred_class}")
+  plt.axis(False);
 
