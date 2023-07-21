@@ -54,8 +54,11 @@ def pred_and_plot(model, filename, class_names=class_names):
   # Make a prediction
   pred = model.predict(tf.expand_dims(img, axis=0))
 
-  # Get the predicted class
-  pred_class = class_names[int(tf.round(pred))]
+  # Add in logic for multi-class and get pred_class name
+  if len(pred[0]) > 1:
+    pred_class = class_names[tf.argmax(pred[0])]
+  else:
+    pred_class = class_names[int(tf.round(pred[0]))]
 
   # Plot the image and predicted class 
   plt.imshow(img)
