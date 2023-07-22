@@ -1,6 +1,35 @@
 import matplotlib.pyplot as plt
-import tensorflow as tf
 import datetime
+import tensorflow as tf
+import tensorflow_hub as hub 
+from tensorflow.keras import layers 
+
+def create_model(model_url, num_classes):
+  """
+  Takes a TensorFlow Hub URL and creates a Keras Sequential model with it.
+
+  Args:
+    model_url (str): A TensorFlow Hub feature extraction URL.
+    num_classes (int): Number of output neurons in the output layer,
+      should be equal to number of target classes.
+  
+  Returns:
+    An uncompiled Keras Sequential model with model_url as feature extractor
+    layer and Dense output layer with num_classes output neurons.
+  """
+  # Download the pretrained model and save it as a Keras layer
+  feature_extraction_layer = hub.KerasLayer(model_url,
+                                           trainable=False, # freeze the already learned patterns 
+                                           name="feature_extraction_layer",
+                                           input_shape=IMG_SHAPE+(3,)) 
+  
+  # Create our own model 
+  model = tf.keras.Sequential([
+      feature_extraction_layer,
+      layers.Dense(num_classes, activation="softmax", name="output_layer")
+  ])
+
+  return model
 
 def plot_loss_curves(history):
   """
